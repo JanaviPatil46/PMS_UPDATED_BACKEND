@@ -71,6 +71,21 @@ const getProposalandElsList = async (req, res) => {
 
 
 //Get a single InvoiceList List
+// const getProposalandElsListbyid = async (req, res) => {
+//     const { id } = req.params;
+  
+//     try {
+//       const proposalesandelsAccountwise = await ProposalesandelsAccountwise.findById(id)
+//         .populate({ path: 'accountid', model: 'Accounts' }) // Ensure model name matches exactly
+//         .populate({ path: 'proposaltemplateid', model: 'ProposalesAndEls', select: 'templatename _id', })
+//         .populate({ path: 'teammember', model: 'User' });
+  
+//       res.status(200).json({ message: "Proposalesandels Accountwise retrieved successfully", proposalesandelsAccountwise });
+//     } catch (error) {
+//       res.status(500).json({ error: error.message });
+//     }
+//   };
+
 const getProposalandElsListbyid = async (req, res) => {
     const { id } = req.params;
   
@@ -78,8 +93,10 @@ const getProposalandElsListbyid = async (req, res) => {
       const proposalesandelsAccountwise = await ProposalesandelsAccountwise.findById(id)
         .populate({ path: 'accountid', model: 'Accounts' }) // Ensure model name matches exactly
         .populate({ path: 'proposaltemplateid', model: 'ProposalesAndEls', select: 'templatename _id', })
-        .populate({ path: 'teammember', model: 'User' });
-  
+        .populate({ path: 'teammember', model: 'User' })
+        .populate({ path: 'invoiceteammember', model: 'User', select: 'username _id', })
+        .populate({ path: 'servicesandinvoicetempid', model: 'InvoiceTemplate', select: 'templatename _id', });
+
       res.status(200).json({ message: "Proposalesandels Accountwise retrieved successfully", proposalesandelsAccountwise });
     } catch (error) {
       res.status(500).json({ error: error.message });
