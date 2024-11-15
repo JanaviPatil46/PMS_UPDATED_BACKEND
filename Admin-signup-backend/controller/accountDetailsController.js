@@ -474,7 +474,7 @@ const getAccountListByUserId = async (req, res) => {
   try {
     // Fetch accounts based on userid
     const accounts = await Account.find({ userid: id }) // Changed to find accounts by userid
-      .populate({ path: "tags", model: "tag" })
+      .populate({ path: "tags", model: "Tags" })
       .populate({ path: "teamMembers", model: "User" })
       .populate({ path: "contacts", model: "Contacts" });
 

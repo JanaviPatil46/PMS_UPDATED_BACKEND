@@ -35,7 +35,13 @@ const SectionSettingConditionSchema = new mongoose.Schema({
   answer: {
     type: String,
     // required: true,
-  }
+  },
+  optionvalue: {
+    type: Boolean,
+
+    // required: true,
+  },
+  
 });
 
 const QuestionSectionSchema = new mongoose.Schema({
