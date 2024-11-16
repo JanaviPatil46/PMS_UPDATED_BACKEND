@@ -1,9 +1,9 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const multer = require("multer");
-const path = require('path');
-const fs = require('fs');
-const { createFolderTemplate, getFolders, getFolder, deleteFolderTemplate, updateFolderTemplate,deleteFile, downloadfile, deleteFolder, downloadfolder, getFolderStructure, createfolder,defaultfolderStructure } = require("../controller/folderTemplateController");
+const path = require("path");
+const fs = require("fs");
+const { createFolderTemplate, getFolders, getFolder, deleteFolderTemplate, updateFolderTemplate, deleteFile, downloadfile, deleteFolder, downloadfolder, getFolderStructure, createfolder, defaultfolderStructure } = require("../controller/folderTemplateController");
 
 router.get("/folder", getFolders);
 router.post("/folder", createFolderTemplate);
@@ -20,10 +20,10 @@ const storage = multer.diskStorage({
     let uploadPath = "";
     if (subfolder3 === "blank") {
       // If subfolder2 is blank, use only folder and subfolder1
-      uploadPath = path.join("uploads", folder, subfolder1,subfolder2);
+      uploadPath = path.join("uploads", folder, subfolder1, subfolder2);
     } else {
       // If subfolder2 is not blank, use folder, subfolder1, and subfolder2
-      uploadPath = path.join("uploads", folder, subfolder1, subfolder2,subfolder3);
+      uploadPath = path.join("uploads", folder, subfolder1, subfolder2, subfolder3);
     }
     cb(null, uploadPath);
   },
@@ -64,11 +64,11 @@ router.post("/createFolder", async (req, res) => {
   const selectedFolder = req.body.selectedFolder;
   const templateId = req.body.templateId;
   const subfolder = req.body.subfolder;
-  
+
   let path;
 
   if (subfolder === "blank") {
-    path =` ${templateId}/${selectedFolder}/`;
+    path = ` ${templateId}/${selectedFolder}/`;
   } else {
     path = `${templateId}/${selectedFolder}/${folderName}/${subfolder}`;
     console.log(path);
@@ -84,13 +84,13 @@ router.post("/createFolder", async (req, res) => {
   }
 });
 //delete single Folder
-router.delete("/deleteFolder", deleteFolder);
+router.post("/deleteFolder/:templateId/:folderName/:subfolder", deleteFolder);
 
 // download file
 router.get("/download/:folder/:filename", downloadfile);
 
 // download folder
-router.get("/download/:folder", downloadfolder);
+router.get("/downloadfolder/:templateId/:folderName/:subfolder", downloadfolder);
 
 // delete Folder Template
 router.delete("/folder/:id", deleteFolderTemplate);
@@ -107,4 +107,4 @@ router.get("/folder-structure", defaultfolderStructure);
 //POST a new Folder
 router.post("/folder/createfolder", createfolder);
 
-module.exports = router
+module.exports = router;

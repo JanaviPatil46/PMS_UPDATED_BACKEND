@@ -5,6 +5,26 @@ const fsPromises = require("fs").promises;
 const mongoose = require("mongoose");
 const path = require("path");
 const multer = require("multer");
+const AdmZip = require("adm-zip");
+
+// Helper function to add files to zip
+const addFilesToZip = async (zip, folderPath, folderName) => {
+  const items = await fsPromises.readdir(folderPath, { withFileTypes: true });
+
+  for (let item of items) {
+    const itemPath = path.join(folderPath, item.name);
+
+    if (item.isDirectory()) {
+      // Recursively add subfolder to zip
+      const subfolder = folderName ? path.join(folderName, item.name) : item.name;
+      await addFilesToZip(zip, itemPath, subfolder);
+    } else {
+      // Add file to zip
+      const filePathInZip = folderName ? path.join(folderName, item.name) : item.name;
+      zip.addLocalFile(itemPath, path.dirname(filePathInZip));
+    }
+  }
+};
 
 // Create folder
 const createFolderTemplate = async (req, res) => {
@@ -118,15 +138,14 @@ const updateFolderTemplate = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-//rename file 
-
+//rename file
 
 // Delete file
 
 const deleteFile = async (req, res) => {
   const folderName = req.body.folderName;
   const fileName = req.body.fileName;
-  const templateId=req.body.templateId;
+  const templateId = req.body.templateId;
 
   console.log(req.body.folderName);
 
@@ -159,11 +178,10 @@ const deleteFile = async (req, res) => {
 
 // Delete Folder
 const deleteFolder = async (req, res) => {
-  const folderName = req.body.folderName;
-  const folderpath = req.body.folderpath;
-
+  const { templateId, folderName, subfolder } = req.params;
+  console.log(templateId, folderName, subfolder);
   try {
-    const folderPath = path.join("uploads/FolderTemplates", folderpath, folderName);
+    const folderPath = path.join("uploads/FolderTemplates", templateId, folderName, subfolder);
     // Use recursive option to delete the folder and its contents
     await fs.rm(folderPath, { recursive: true }, (err) => {
       if (err) {
@@ -205,18 +223,16 @@ const downloadfile = async (req, res) => {
 
 // download folder
 const downloadfolder = async (req, res) => {
-  const folderName = req.params.folder;
-  const folderPath = path.join(__dirname, "uploads", folderName);
+  const { templateId, folderName, subfolder } = req.params;
+  console.log(templateId, folderName, subfolder);
 
+  const folderPath = path.join(__dirname, "uploads/FolderTemplates/66efe96db8c106fab73b2775/", templateId, folderName);
   try {
-    const zipFilePath = path.join(__dirname, "temp", `${folderName}.zip`);
+    const zipFilePath = path.join(__dirname, "temp", `${subfolder}.zip`);
     const zip = new AdmZip();
-
-    await addFilesToZip(zip, folderPath, folderName);
-
+    await addFilesToZip(zip, folderPath, subfolder);
     zip.writeZip(zipFilePath);
-
-    res.download(zipFilePath, `${folderName}.zip`, async () => {
+    res.download(zipFilePath, `${subfolder}.zip`, async () => {
       await fs.unlink(zipFilePath);
     });
   } catch (error) {
