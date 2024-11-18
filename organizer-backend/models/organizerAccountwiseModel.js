@@ -81,6 +81,24 @@ const organizerSectionSchemaformElementSchema = new mongoose.Schema({
 
 });
 
+// Define the main form schema
+const SectionSettingSchema = new mongoose.Schema({
+  sectionRepeatingMode: {
+    type: Boolean,
+    default: false
+  },
+  buttonName: {
+    type: String,
+    // required: true,
+    // maxlength: 25
+  },
+  conditional: {
+    type: Boolean,
+    default: false
+  },
+  conditions: [SectionSettingConditionSchema]  // Array of conditions, each with a question and answer
+});
+
 
 
 const organizerSectionSchema = new mongoose.Schema({
@@ -88,6 +106,7 @@ const organizerSectionSchema = new mongoose.Schema({
     name: { type: String },
     text: { type: String },
     formElements: [organizerSectionSchemaformElementSchema],
+    sectionsettings: SectionSettingSchema
 });
 
 
