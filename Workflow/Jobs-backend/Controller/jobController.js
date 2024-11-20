@@ -140,7 +140,8 @@ const getJobList = async (req, res) => {
     const jobs = await Job.find()
       .populate({ path: "accounts", model: "Accounts" })
       .populate({ path: "pipeline", model: "pipeline", populate: { path: "stages", model: "stage" } })
-      .populate({ path: "jobassignees", model: "User" });
+      .populate({ path: "jobassignees", model: "User" })
+      .populate({ path: "clientfacingstatus", model: "ClientFacingjobStatus" });
 
     const jobList = [];
 
@@ -176,7 +177,15 @@ const getJobList = async (req, res) => {
           stageNames = [matchedStage.name];
         }
       }
-
+      const clientFacingStatus = job.clientfacingstatus
+      ? {
+          statusId: job.clientfacingstatus._id,
+          statusName: job.clientfacingstatus.clientfacingName,
+          statusColor: job.clientfacingstatus.clientfacingColour,
+          // description: job.clientfacingstatus.description,
+          // Include other fields from clientfacingstatus as needed
+        }
+      : null;
       jobList.push({
         id: job._id,
         Name: job.jobname,
@@ -185,7 +194,7 @@ const getJobList = async (req, res) => {
         Stage: stageNames,
         Account: accountsname,
         AccountId: accountId,
-
+        ClientFacingStatus: clientFacingStatus,
         StartDate: job.startdate,
         DueDate: job.enddate,
         Priority: job.priority,
