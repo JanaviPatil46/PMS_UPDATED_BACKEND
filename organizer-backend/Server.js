@@ -22,6 +22,9 @@ app.use("/workflow/organizers", organizerTempRoutes);
 
 app.use("/workflow/orgaccwise", organizerAccountWiseRoute);
 
+const organizersendemail = require("./middleware/organizersendmail");
+app.use("/", organizersendemail);
+
 const PORT = process.env.PORT || 7600;
 app.listen(PORT, ()=>{
     console.log(`connection is live at port no. ${PORT}`);

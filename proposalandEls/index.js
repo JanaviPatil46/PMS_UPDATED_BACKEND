@@ -10,7 +10,8 @@ app.use(cors());
 
 const proposalandelsaccountwiseRoute = require('./routes/proposalandelsaccountwiseRoute');
 app.use('/proposalandels/', proposalandelsaccountwiseRoute);
-
+const proposalcreateemail = require("./middleware/proposalcreateemail");
+app.use("/", proposalcreateemail);
 // database connect
 dbconnect()
 

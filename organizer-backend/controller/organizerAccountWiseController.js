@@ -1,5 +1,5 @@
 const OrganizerAccountWise = require("../models/organizerAccountwiseModel");
-const account = require("../models/accountDetailsModel");
+const account = require("../models/AccountModel");
 const mongoose = require("mongoose");
 
 //get all OrganizerAccountWise
@@ -143,7 +143,7 @@ const deleteOrganizerAccountWise = async (req, res) => {
 const getOrganizerByAccountId = async (req, res) => {
   try {
     const organizerAccountWise = await OrganizerAccountWise.find({ accountid: req.params.id })
-      .populate("accountid") // Populate the account details if needed
+      .populate({ path: "accountid", model: "Accounts" }) // Populate the account details if needed
       .populate({ path: "organizertemplateid", model: "OrganizerTemplate" }); // Populate the organizer template details if needed
     // .populate({ path: 'jobid', model: 'Job' }); // Populate the job details if needed
 
