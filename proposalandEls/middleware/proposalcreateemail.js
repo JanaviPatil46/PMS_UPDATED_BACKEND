@@ -3,7 +3,8 @@ const nodemailer = require('nodemailer');
 const router = express.Router();
 const Account = require('../models/AccountModel.js');
 const Contact = require('../models/contactsModel.js');
-
+require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 router.post('/proposalsendemail', async (req, res) => {
 
     const { accountid, username, proposalName, proposalLink } = req.body;
@@ -29,17 +30,25 @@ router.post('/proposalsendemail', async (req, res) => {
                             port: 587,
                             secure: false, // Use STARTTLS
                             auth: {
-                                user: "dipeeka.pote52@gmail.com",
-                                pass: "togt ljzg urar dlam",
-                            },
+                            //     user: "dipeeka.pote52@gmail.com",
+                            //     pass: "togt ljzg urar dlam",
+                            // },
+                            user: process.env.EMAIL,
+                            pass: process.env.EMAIL_PASSWORD,
+                        },
+                        tls: {
+                            rejectUnauthorized: false // Only for development
+                          },
                         });
 
                         const missingAccountsList = missingContactsAccounts.join(', ');
                         const proposalName = proposalName;
 
                         const mailOptions = {
-                            from: 'dipeeka.pote52@gmail.com',
-                            to: 'dipeeka.pote52@gmail.com',
+                            // from: 'dipeeka.pote52@gmail.com',
+                            // to: 'dipeeka.pote52@gmail.com',
+                            from: process.env.EMAIL,
+                            to: email,
                             subject: 'Some proposals were not created',
                             html: `
                                 <p>The following accounts have no contacts who can sign proposals, so we couldn’t create proposals for them:</p>
@@ -64,13 +73,19 @@ router.post('/proposalsendemail', async (req, res) => {
                         port: 587,
                         secure: false, // Use STARTTLS
                         auth: {
-                            user: "dipeeka.pote52@gmail.com",
-                            pass: "togt ljzg urar dlam",
-                        },
+                        //     user: "dipeeka.pote52@gmail.com",
+                        //     pass: "togt ljzg urar dlam",
+                        // },
+                        user: process.env.EMAIL,
+                        pass: process.env.EMAIL_PASSWORD,
+                    },
+                    tls: {
+                        rejectUnauthorized: false // Only for development
+                      },
                     });
 
                     const mailOptions = {
-                        from: 'dipeeka.pote52@gmail.com',
+                        from: process.env.EMAIL,
                         to: contact.email,
                         subject: `Review and sign document: ${proposalName}`,
                         html: `

@@ -178,14 +178,14 @@ const getJobList = async (req, res) => {
         }
       }
       const clientFacingStatus = job.clientfacingstatus
-      ? {
+        ? {
           statusId: job.clientfacingstatus._id,
           statusName: job.clientfacingstatus.clientfacingName,
           statusColor: job.clientfacingstatus.clientfacingColour,
           // description: job.clientfacingstatus.description,
           // Include other fields from clientfacingstatus as needed
         }
-      : null;
+        : null;
       jobList.push({
         id: job._id,
         Name: job.jobname,
@@ -256,12 +256,12 @@ const getActiveJobList = async (req, res) => {
       }
       const clientFacingStatus = job.clientfacingstatus
         ? {
-            statusId: job.clientfacingstatus._id,
-            statusName: job.clientfacingstatus.clientfacingName,
-            statusColor: job.clientfacingstatus.clientfacingColour,
-            // description: job.clientfacingstatus.description,
-            // Include other fields from clientfacingstatus as needed
-          }
+          statusId: job.clientfacingstatus._id,
+          statusName: job.clientfacingstatus.clientfacingName,
+          statusColor: job.clientfacingstatus.clientfacingColour,
+          // description: job.clientfacingstatus.description,
+          // Include other fields from clientfacingstatus as needed
+        }
         : null;
       jobList.push({
         id: job._id,
@@ -288,6 +288,80 @@ const getActiveJobList = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+const getActiveJobListbyAccountId = async (req, res) => {
+  try {
+    const { isActive, accountid } = req.params;
+
+    // Fetch jobs filtered by isActive and accountid
+    const jobs = await Job.find({ active: isActive, accounts: accountid })
+      .populate({ path: "accounts", model: "Accounts" })
+      .populate({
+        path: "pipeline",
+        model: "pipeline",
+        populate: { path: "stages", model: "Stage" },
+      })
+      .populate({ path: "jobassignees", model: "User" })
+      .populate({ path: "clientfacingstatus", model: "ClientFacingjobStatus" });
+
+    // Transform job data into the desired structure
+    const jobList = jobs.map((job) => {
+      // Extract pipeline and stages
+      const pipeline = job.pipeline;
+      const stageNames = Array.isArray(job.stageid)
+        ? job.stageid.map((stageId) => {
+          const matchedStage = pipeline?.stages?.find((stage) =>
+            stage._id.equals(stageId)
+          );
+          return matchedStage ? matchedStage.name : null;
+        }).filter(Boolean)
+        : job.stageid
+          ? [pipeline?.stages?.find((stage) => stage._id.equals(job.stageid))?.name || null]
+          : null;
+
+      // Extract job assignee names and account names
+      const jobAssigneeNames = job.jobassignees.map((assignee) => assignee.username);
+      const accountsname = job.accounts.map((account) => account.accountName);
+      const accountId = job.accounts.map((account) => account._id);
+
+      // Extract client-facing status
+      const clientFacingStatus = job.clientfacingstatus
+        ? {
+          statusId: job.clientfacingstatus._id,
+          statusName: job.clientfacingstatus.clientfacingName,
+          statusColor: job.clientfacingstatus.clientfacingColour,
+        }
+        : null;
+
+      // Construct the job object
+      return {
+        id: job._id,
+        Name: job.jobname,
+        JobAssignee: jobAssigneeNames,
+        Pipeline: pipeline?.pipelineName || null,
+        PipelineId: pipeline?._id,
+        Stage: stageNames,
+        Account: accountsname,
+        AccountId: accountId,
+        ClientFacingStatus: clientFacingStatus,
+        StartDate: job.startdate,
+        DueDate: job.enddate,
+        Priority: job.priority,
+        Description: job.description,
+        StartsIn: job.startsin ? `${job.startsin} ${job.startsinduration}` : null,
+        DueIn: job.duein ? `${job.duein} ${job.dueinduration}` : null,
+        createdAt: job.createdAt,
+        updatedAt: job.updatedAt,
+      };
+    });
+
+    res.status(200).json({ message: "JobTemplate retrieved successfully", jobList });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 const getJobListbyid = async (req, res) => {
   const { id } = req.params;
@@ -383,4 +457,5 @@ module.exports = {
   getJobListbyid,
   updatestgeidtojob,
   getActiveJobList,
+  getActiveJobListbyAccountId
 };

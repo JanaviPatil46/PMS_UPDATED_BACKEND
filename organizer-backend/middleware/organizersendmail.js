@@ -3,7 +3,8 @@ const nodemailer = require('nodemailer');
 const router = express.Router();
 const Account = require('../models/AccountModel.js');
 const Contact = require('../models/contactsModel.js');
-
+require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 router.post('/organizersendemail', async (req, res) => {
     const { accountid, username, organizerName, organizerLink } = req.body;
     const missingContactsAccounts = [];  // Array to store account names without eligible contacts
@@ -26,9 +27,14 @@ router.post('/organizersendemail', async (req, res) => {
                             port: 587,
                             secure: false, // Use STARTTLS
                             auth: {
-                                user: "dipeeka.pote52@gmail.com",
-                                pass: "togt ljzg urar dlam",
+                                // user: "dipeeka.pote52@gmail.com",
+                                // pass: "togt ljzg urar dlam",
+                                user: process.env.EMAIL,
+                                pass: process.env.EMAIL_PASSWORD,
                             },
+                            tls: {
+                                rejectUnauthorized: false // Only for development
+                              },
                         });
 
 
@@ -36,8 +42,10 @@ router.post('/organizersendemail', async (req, res) => {
                         const proposalName = organizerName;
 
                         const mailOptions = {
-                            from: 'dipeeka.pote52@gmail.com',
-                            to: 'dipeeka.pote52@gmail.com',
+                            // from: 'dipeeka.pote52@gmail.com',
+                            // to: 'dipeeka.pote52@gmail.com',
+                            from: process.env.EMAIL,
+                            to: email,
                             subject: 'Unable to send Organizer to Contacts',
                             html: `
                                 <p>The following accounts have no contacts who can sign proposals, so we couldn’t create proposals for them:</p>
@@ -60,13 +68,19 @@ router.post('/organizersendemail', async (req, res) => {
                         port: 587,
                         secure: false, // Use STARTTLS
                         auth: {
-                            user: "dipeeka.pote52@gmail.com",
-                            pass: "togt ljzg urar dlam",
-                        },
+                        //     user: "dipeeka.pote52@gmail.com",
+                        //     pass: "togt ljzg urar dlam",
+                        // },
+                        user: process.env.EMAIL,
+                        pass: process.env.EMAIL_PASSWORD,
+                    },
+                    tls: {
+                        rejectUnauthorized: false // Only for development
+                      },
                     });
 
                     const mailOptions = {
-                        from: 'dipeeka.pote52@gmail.com',
+                        from: process.env.EMAIL,
                         to: contact.email,
                         subject: 'New Organizer Created for You',
                         html: `
