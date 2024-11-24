@@ -4,6 +4,8 @@ const Tags = require("../models/tagModel");
 const Contacts = require("../models/contactsModel");
 const User = require("../models/userModel");
 const companyAddress = require("../models/companyAddressModel");
+const fs = require("fs");
+const fsPromises = require("fs").promises;
 
 // POST a new account
 const createAccount = async (req, res) => {
@@ -13,7 +15,22 @@ const createAccount = async (req, res) => {
 
     const { clientType, accountName, tags, teamMember, contacts, description, active } = req.body;
 
-    newAccount = await Accounts.create({ clientType, accountName, tags, teamMember, contacts, description, active });
+    newAccount = await Accounts.create({ clientType, accountName, tags, teamMember, contacts, description,active });
+
+
+
+
+
+
+    // const accountIdFolder = `uploads/accountsFolder/${newAccount._id}`;
+    // if (!fs.existsSync(accountIdFolder)) {
+    //   fs.mkdirSync(accountIdFolder, { recursive: true });
+      
+     
+    // }
+
+
+
 
     if (clientType === "Company") {
       const { companyName, country, streetAddress, city, state, postalCode, active } = req.body;

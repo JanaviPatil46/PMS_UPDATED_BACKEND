@@ -30,7 +30,8 @@ const accountSchema = new mongoose.Schema(
     ],
 
     // foldertemplate: {
-    //     type: String
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "FolderTemplate",
     // },
     contacts: [
       {
