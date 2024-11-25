@@ -13,9 +13,9 @@ const createAccount = async (req, res) => {
     let newAccount;
     let newCompanyAccount;
 
-    const { clientType, accountName, tags, teamMember, contacts, description, active } = req.body;
+    const { clientType, accountName, tags, teamMember, contacts, description,foldertemplate, active } = req.body;
 
-    newAccount = await Accounts.create({ clientType, accountName, tags, teamMember, contacts, description,active });
+    newAccount = await Accounts.create({ clientType, accountName, tags, teamMember, contacts, description,foldertemplate,active });
 
 
 

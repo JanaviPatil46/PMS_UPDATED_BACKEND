@@ -29,10 +29,10 @@ const accountSchema = new mongoose.Schema(
       },
     ],
 
-    // foldertemplate: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "FolderTemplate",
-    // },
+    foldertemplate: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FolderTemplate",
+    },
     contacts: [
       {
         type: mongoose.Schema.Types.ObjectId,
