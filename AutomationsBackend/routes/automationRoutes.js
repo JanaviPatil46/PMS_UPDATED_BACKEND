@@ -1,14 +1,14 @@
 // routes/automationRoutes.js
 const express = require('express');
 const {
-  createAutomation,
+  AutomationsMails,
  
 } = require('../controllers/automationController');
 
 const router = express.Router();
 
 // Routes
-router.post('/', createAutomation); // Create a new automation
+router.post('/', AutomationsMails); // Create a new automation
 
 
 module.exports = router;
