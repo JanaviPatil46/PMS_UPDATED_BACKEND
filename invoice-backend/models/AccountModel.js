@@ -23,10 +23,13 @@ teamMember: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
         required: [true, 'Team members are required'],
     }], 
-
-    // foldertemplate: {
-    //     type: String
-    // },
+    contacts: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Contacts",
+          // required    : [true, 'Contacts are required'],
+        },
+      ],
     
 }, { timestamps: true });
 

@@ -49,7 +49,7 @@ const invoiceSchema = new mongoose.Schema({
         ref: 'Accounts',
     },
     invoicenumber: {
-        type: String,
+        type: Number,
     },
     invoicedate: {
         type: Date,
@@ -69,7 +69,7 @@ const invoiceSchema = new mongoose.Schema({
 
     teammember: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        // ref: 'User',
     },
     payInvoicewithcredits: {
         type: Boolean,

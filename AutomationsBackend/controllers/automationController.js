@@ -285,13 +285,13 @@ exports.AutomationsMails = async (req, res) => {
           // Add invoice logic here
           
 
-      case "send proposal":
-      case "El":
+      case "Send Proposal/Els":
+     
         console.log("Executing proposal or El logic...");
         // Add proposal/El logic here
         break;
 
-      case "create organizer":
+      case "Create Organizer":
         console.log("Executing organizer creation logic...");
         // Add organizer creation logic here
         break;

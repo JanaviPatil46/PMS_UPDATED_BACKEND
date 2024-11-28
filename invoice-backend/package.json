@@ -16,6 +16,9 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.5.3",
-    "nodemon": "^3.1.4"
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.4",
+    "pdfkit": "^0.15.1",
+    "puppeteer": "^23.9.0"
   }
 }
