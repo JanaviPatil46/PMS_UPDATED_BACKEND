@@ -226,7 +226,7 @@ exports.AutomationsMails = async (req, res) => {
       // break;
 
      
-        case "send Invoice":
+        case "Send Invoice":
 
          
           // Validate inputs
