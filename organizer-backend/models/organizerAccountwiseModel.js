@@ -140,7 +140,12 @@ const organizerAccountWiseSchema = new mongoose.Schema({
         ref: 'Job',
     }],
 
+    fileUploadPath:{
+      type:String,
+      
+    },
     sections: [organizerSectionSchema],
+
 
     active: {
         type: Boolean,

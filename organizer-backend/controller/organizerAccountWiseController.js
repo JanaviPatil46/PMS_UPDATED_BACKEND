@@ -286,15 +286,18 @@ const createOrganizerAccountWise = async (req, res) => {
               port: 587,
               secure: false, // Use STARTTLS
               auth: {
-                  user: "dipeeka.pote52@gmail.com",
-                  pass: "togt ljzg urar dlam",
-              },
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+            tls: {
+                rejectUnauthorized: false
+            },
           });
 
           const missingAccountsList = missingContactsAccounts.join(", ");
           const mailOptions = {
-              from: "dipeeka.pote52@gmail.com",
-              to: "dipeeka.pote52@gmail.com",
+              from: process.env.EMAIL,
+              to: process.env.EMAIL,
               subject: "Unable to send Organizer to Contacts",
               html: `
                   <p>The following accounts have no contacts who can sign proposals, so we couldn’t create proposals for them:</p>

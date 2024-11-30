@@ -33,9 +33,9 @@ const createAccount = async (req, res) => {
 
 
     if (clientType === "Company") {
-      const { companyName, country, streetAddress, city, state, postalCode, active } = req.body;
+      const { companyName, country, streetAddress, city, state, postalCode,foldertemplate, active } = req.body;
 
-      newCompanyAccount = await companyAddress.create({ companyName, country, streetAddress, city, state, postalCode, companyId: newAccount._id, active });
+      newCompanyAccount = await companyAddress.create({ companyName, country, streetAddress, city, state, postalCode, companyId: newAccount._id,foldertemplate, active });
 
       // Optionally, update the Accounts document to reference the company address
       newAccount.companyAddress = newCompanyAccount._id; // Ensure the Accounts schema includes companyAddress field
@@ -53,6 +53,7 @@ const createAccount = async (req, res) => {
             city: newCompanyAccount.city,
             state: newCompanyAccount.state,
             postalCode: newCompanyAccount.postalCode,
+            foldertemplate: newCompanyAccount.foldertemplate,
             active: newCompanyAccount.active,
           }
         : null,
