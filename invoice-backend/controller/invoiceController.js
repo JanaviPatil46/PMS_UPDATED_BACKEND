@@ -796,20 +796,85 @@ const getInvoiceListbyid = async (req, res) => {
 };
 
 // Get a single InvoiceList by Account ID
+// const getInvoiceListbyAccountid = async (req, res) => {
+//   const { id } = req.params; // Correct destructuring
+//   // console.log(id); // Log the account ID for debugging
+
+//   try {
+//     const invoice = await Invoice.find({ account: id }); // Corrected syntax here
+
+//     if (!invoice || invoice.length === 0) {
+//       return res.status(404).json({ message: "No invoices found for this account." });
+//     }
+
+//     res.status(200).json({ message: "Invoice retrieved successfully", invoice });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const getInvoiceListbyAccountid = async (req, res) => {
-  const { id } = req.params; // Correct destructuring
-  // console.log(id); // Log the account ID for debugging
+  const { id } = req.params; // Destructuring the account ID
 
   try {
-    const invoice = await Invoice.find({ account: id }); // Corrected syntax here
+      const invoice = await Invoice.find({ account: id }); // Fetch invoices for the account
 
-    if (!invoice || invoice.length === 0) {
-      return res.status(404).json({ message: "No invoices found for this account." });
-    }
+      if (!invoice || invoice.length === 0) {
+          return res.status(404).json({ message: "No invoices found for this account." });
+      }
 
-    res.status(200).json({ message: "Invoice retrieved successfully", invoice });
+      // Fetch additional data for placeholders
+      const account = await Accounts.findById(id).populate("contacts");
+ 
+      const validContact = account.contacts.filter(contact => contact.emailSync);
+
+      const currentDate = new Date();
+
+      // Define placeholder values
+      const placeholderValues = {
+          ACCOUNT_NAME: account?.accountName || '',
+          FIRST_NAME: validContact[0]?.firstName || '',
+          MIDDLE_NAME: validContact[0]?.middleName || '',
+          LAST_NAME: validContact[0]?.lastName || '',
+          CONTACT_NAME: validContact[0]?.contactName || '',
+          COMPANY_NAME: validContact[0]?.companyName || '',
+          COUNTRY: validContact[0]?.country || '',
+          STREET_ADDRESS: validContact[0]?.streetAddress || '',
+          STATEPROVINCE: validContact[0]?.state || '',
+          PHONE_NUMBER: validContact[0]?.phoneNumbers || '',
+          ZIPPOSTALCODE: validContact[0]?.postalCode || '',
+          CITY: validContact[0]?.city || '',
+          CURRENT_DAY_FULL_DATE: currentDate.toLocaleDateString(),
+          CURRENT_DAY_NUMBER: currentDate.getDate(),
+          CURRENT_DAY_NAME: currentDate.toLocaleString('default', { weekday: 'long' }),
+          CURRENT_MONTH_NUMBER: currentDate.getMonth() + 1,
+          CURRENT_MONTH_NAME: currentDate.toLocaleString('default', { month: 'long' }),
+          CURRENT_YEAR: currentDate.getFullYear(),
+          // Add other dynamic placeholders as required
+      };
+
+      // Function to replace placeholders in text
+      const replacePlaceholders = (template, data) => {
+          return template.replace(/\[([\w\s]+)\]/g, (match, placeholder) => {
+              return data[placeholder.trim()] || '';
+          });
+      };
+
+      // Update each invoice's description with placeholders replaced
+      const updatedInvoices = invoice.map((inv) => {
+          const updatedDescription = replacePlaceholders(inv.description || '', placeholderValues);
+          return {
+              ...inv.toObject(),
+              description: updatedDescription, // Replace description with the updated version
+          };
+      });
+
+      res.status(200).json({
+          message: "Invoices retrieved successfully",
+          invoice: updatedInvoices,
+      });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
   }
 };
 

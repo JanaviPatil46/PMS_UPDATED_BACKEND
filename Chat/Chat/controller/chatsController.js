@@ -3,13 +3,13 @@ const Chats = require('../models/chatsModel');
 const mongoose = require("mongoose");
 const AccountwiseChat = require('../models/chatsModel');
 const ChatTemplate = require("../models/ChatTempModels")  // Ensure this import is correct
-const account = require("../models/accountDetailsModel")
+const Accounts = require("../models/AccountModel")
 
 // Get all ChatTemplates
 const getAllChats = async (req, res) => {
     try {
         const accountChats = await AccountwiseChat.find()
-            .populate({ path: 'accountid', model: 'account' }); // Removed .populate('chattemplateid') since it's redundant
+            .populate({ path: 'accountid', model: 'Accounts' }); // Removed .populate('chattemplateid') since it's redundant
         res.status(200).json({ message: "Chats Accountwise retrieved successfully", accountChats });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -22,7 +22,7 @@ const getChats = async (req, res) => {
         const { id } = req.params;
 
         const accountChats = await AccountwiseChat.findById(id)
-            .populate({ path: 'accountid', model: 'account' })
+            .populate({ path: 'accountid', model: 'Accounts' })
             .populate({ path: 'chattemplateid', model: 'ChatTemplate' });
 
         if (!accountChats) {
@@ -165,7 +165,7 @@ const getchatAccountwiselist = async (req, res) => {
         const { id } = req.params;
 
         const chataccountwise = await AccountwiseChat.find({ accountid: id })
-            .populate({ path: 'accountid', model: 'account' })
+            .populate({ path: 'accountid', model: 'Accounts' })
             .populate({ path: 'chattemplateid', model: 'ChatTemplate' });
 
         if (!chataccountwise) {
@@ -184,7 +184,7 @@ const getisactivechatAccountwise = async (req, res) => {
         const { accountid, isactive } = req.params;
 
         const chataccountwise = await AccountwiseChat.find({ accountid: accountid, active: isactive })
-            .populate({ path: 'accountid', model: 'account' })
+            .populate({ path: 'accountid', model: 'Accounts' })
             .populate({ path: 'chattemplateid', model: 'ChatTemplate' });
 
         res.status(200).json({ message: "Chats Accountwise retrieved successfully", chataccountwise });
