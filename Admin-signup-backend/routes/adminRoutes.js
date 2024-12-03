@@ -81,7 +81,7 @@ const router = express.Router();
 
 const { upload } = require("../middleware/uploadfile");
 const { createAdmin, getAdmins, getAdmin, deleteAdmin, updateAdmin, updatePassword, getAdminByEmail } = require("../Controller/adminSignupController");
-const { createAccount, getAccount, getAccounts, updateAccount, deleteAccount, getAccountsList, getAccountsListById, getAccountListByUserId } = require("../Controller/accountDetailsController");
+// const { createAccount, getAccount, getAccounts, updateAccount, deleteAccount, getAccountsList, getAccountsListById, getAccountListByUserId } = require("../Controller/accountDetailsController");
 const { createTeamMember, getTeamMembers, getTeamMember, deleteTeamMember, updateTeamMember, getTeamMemberList, updateTeamMemberPassword } = require("../Controller/teamMemberController");
 const { getClients, getClient, createClient, deleteClient, updateClient, getClientByEmail, updateclientPassword } = require("../Controller/clientSignupController");
 const { createNotification, getNotifications, getNotification, deleteNotification, updateNotification, getNotificationbyUser } = require("../Controller/adminNotificationController");
@@ -98,14 +98,14 @@ router.patch("/adminsignup/updatepassword", updatePassword);
 //ADMIN SIGNUP END******************** */
 
 //ACCOUNT DETAILS START******************** */
-router.get("/accountdetails", getAccounts);
-router.get("/accountdetails/:id", getAccount);
-router.post("/accountdetails", createAccount);
-router.delete("/accountdetails/:id", deleteAccount);
-router.patch("/accountdetails/:id", updateAccount);
-router.get("/account/accountdetailslist/", getAccountsList);
-router.get("/accountdetails/accountdetailslist/listbyid/:id", getAccountsListById);
-router.get("/accountdetails/accountdetailslist/listbyuserid/:id", getAccountListByUserId);
+// router.get("/accountdetails", getAccounts);
+// router.get("/accountdetails/:id", getAccount);
+// router.post("/accountdetails", createAccount);
+// router.delete("/accountdetails/:id", deleteAccount);
+// router.patch("/accountdetails/:id", updateAccount);
+// router.get("/account/accountdetailslist/", getAccountsList);
+// router.get("/accountdetails/accountdetailslist/listbyid/:id", getAccountsListById);
+// router.get("/accountdetails/accountdetailslist/listbyuserid/:id", getAccountListByUserId);
 //ACCOUNT DETAILS END******************** */
 
 //*Team Member START******* *//
