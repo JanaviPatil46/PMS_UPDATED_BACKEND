@@ -369,25 +369,70 @@ const getOrganizerByAccountId = async (req, res) => {
 };
 
 //update a new OrganizerTemplate
+// const updateOrganizerAccountWise = async (req, res) => {
+//   const { id } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(404).json({ error: "Invalid TaskTemplate ID" });
+//   }
+
+//   try {
+//     const updatedOrganizerAccountWise = await OrganizerAccountWise.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+
+//     if (!updatedOrganizerAccountWise) {
+//       return res.status(404).json({ error: "No such OrganizerAccountWise" });
+//     }
+
+//     res.status(200).json({ message: "Organizer AccountWise Updated successfully", updatedOrganizerAccountWise });
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
+
 const updateOrganizerAccountWise = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "Invalid TaskTemplate ID" });
+    return res.status(404).json({ error: "Invalid OrganizerAccountWise ID" });
   }
 
   try {
-    const updatedOrganizerAccountWise = await OrganizerAccountWise.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+    const { sections, issubmited } = req.body;
 
-    if (!updatedOrganizerAccountWise) {
-      return res.status(404).json({ error: "No such OrganizerAccountWise" });
+    console.log("Received Sections:", sections);
+
+    const updates = sections.map(section => ({
+      updateOne: {
+        filter: { _id: id, "sections.id": section.id },
+        update: { 
+          $set: {
+            "sections.$.issubmited": section.issubmited
+          }
+        }
+      }
+    }));
+
+    const bulkWriteResult = await OrganizerAccountWise.bulkWrite(updates);
+
+    if (!bulkWriteResult.matchedCount) {
+      return res.status(404).json({ error: "No matching OrganizerAccountWise found" });
     }
 
-    res.status(200).json({ message: "Organizer AccountWise Updated successfully", updatedOrganizerAccountWise });
+    console.log("Bulk Write Result:", bulkWriteResult);
+    res.status(200).json({
+      message: "Organizer AccountWise Updated successfully",
+      bulkWriteResult,
+    });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error("Error updating organizer:", error);
+    res.status(500).json({ error: error.message });
   }
 };
+
+
+console.log(updateOrganizerAccountWise)
+
+
 
 module.exports = {
   createOrganizerAccountWise,

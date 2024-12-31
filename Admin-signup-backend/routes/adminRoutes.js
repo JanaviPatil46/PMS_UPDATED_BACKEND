@@ -80,19 +80,24 @@ const express = require("express");
 const router = express.Router();
 
 const { upload } = require("../middleware/uploadfile");
-const { createAdmin, getAdmins, getAdmin, deleteAdmin, updateAdmin, updatePassword, getAdminByEmail } = require("../Controller/adminSignupController");
+const{settingsupload}=require("../middleware/accountSettingsUploadfiles");
+const { createAdmin, getAdmins, getAdmin,getAdminByUserid, deleteAdmin, updateAdmin, updatePassword, getAdminByEmail } = require("../controller/adminSignupController");
 // const { createAccount, getAccount, getAccounts, updateAccount, deleteAccount, getAccountsList, getAccountsListById, getAccountListByUserId } = require("../Controller/accountDetailsController");
 const { createTeamMember, getTeamMembers, getTeamMember, deleteTeamMember, updateTeamMember, getTeamMemberList, updateTeamMemberPassword } = require("../Controller/teamMemberController");
-const { getClients, getClient, createClient, deleteClient, updateClient, getClientByEmail, updateclientPassword } = require("../Controller/clientSignupController");
+const { getClients, getClient, createClient, deleteClient, updateClient, getClientByEmail, updateclientPassword,getClientByUserId ,updateClientByUserId} = require("../controller/clientSignupController");
 const { createNotification, getNotifications, getNotification, deleteNotification, updateNotification, getNotificationbyUser } = require("../Controller/adminNotificationController");
 
 //ADMIN SIGNUP START******************** */
 router.get("/adminsignup", getAdmins);
-router.get("/adminsignup/:id", getAdmin);
+router.get("/adminsignup/:userid" , getAdminByUserid);
+router.get("/adminsignup/:id" , getAdmin);
 router.post("/adminsignup", createAdmin);
 router.delete("/adminsignup/:id", deleteAdmin);
-router.patch("/adminsignup/:id", updateAdmin);
-router.get("/adminsignup/adminbyemail/:email", getAdminByEmail);
+// router.patch("/adminsignup/:id", updateAdmin);
+router.patch("/adminsignup/:id" , upload.single("ProfilePicture"), updateAdmin);
+// router.post("/teammember", upload.single("settingsupload"), createTeamMember);
+
+router.get("/adminsignup/adminbyemail/:email",  getAdminByEmail);
 router.patch("/adminsignup/updatepassword", updatePassword);
 
 //ADMIN SIGNUP END******************** */
@@ -126,9 +131,13 @@ router.patch("/teammember/updateTeamMemberPassword", updateTeamMemberPassword);
 //*client SIGNUP START******* */
 router.get("/clientsignup", getClients);
 router.get("/clientsignup/:id", getClient);
+router.get("/client/:userid" , getClientByUserId);
 router.post("/clientsignup", createClient);
 router.delete("/clientsignup/:id", deleteClient);
-router.patch("/clientsignup/:id", updateClient);
+router.patch("/clientsignup/:id",  updateClient);
+
+router.patch("/client/:userid",upload.single("ProfilePicture"),  updateClientByUserId);
+
 router.get("/clientsignup/clientbyemail/:email", getClientByEmail);
 router.patch("/clientsignup/updateclientPassword", updateclientPassword);
 

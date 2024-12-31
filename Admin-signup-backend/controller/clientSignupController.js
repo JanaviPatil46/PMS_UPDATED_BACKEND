@@ -29,10 +29,59 @@ const getClients = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
-  
+
+  // Function to get client data by userid
+const getClientByUserId = async (req, res) => {
+  try {
+      const { userid } = req.params; // Extract userid from request parameters
+
+      // Find the client by userid
+      const client = await Client.findOne({ userid });
+
+      if (!client) {
+          return res.status(404).json({ message: "Client not found" });
+      }
+
+      // Respond with the client data
+      res.status(200).json({
+          message: "Client retrieved successfully",
+          client,
+      });
+  } catch (error) {
+      // Handle errors
+      console.error("Error fetching client:", error);
+      res.status(500).json({ message: "An error occurred while retrieving the client" });
+  }
+}
+
+//Function to update client data by userid
+ const updateClientByUserId = async (req, res) => {
+  try {
+    const { userid } = req.params; // Extract userid from request parameters
+    const updateData = req.body; // Extract the data to update from the request body
+
+    // Find and update the client by userid
+    const updatedClient = await Client.findOneAndUpdate({ userid }, updateData, { new: true });
+
+    if (!updatedClient) {
+        return res.status(404).json({ message: "Client not found" });
+    }
+
+    // Respond with the updated client data
+    res.status(200).json({
+        message: "Client updated successfully",
+        client: updatedClient,
+    });
+} catch (error) {
+    // Handle errors
+    console.error("Error updating client:", error);
+    res.status(500).json({ message: "An error occurred while updating the client" });
+}
+};
+
   // POST create a new Client
   const createClient = async (req, res) => {
-    const { firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword,userid } = req.body;
+    const { firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword,userid,profilePicture } = req.body;
   
     try {
       //check the email already exists
@@ -42,7 +91,7 @@ const getClients = async (req, res) => {
       }
   
       const client = await Client.create({
-        firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword,userid});
+        firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword,userid,profilePicture,getClientByUserid});
       res.status(200).json({ message: "Client created successfully", client });
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -79,8 +128,17 @@ const getClients = async (req, res) => {
     }
   
     try {
+     // Prepare the update object from the request body
+     let updateData = { ...req.body };
+
+      // If a file is uploaded, update the profile picture path
+      if (req.file) {
+        updateData.profilePicture = req.file.path; // Store the file path
+      }
+
       const updatedClient = await Client.findOneAndUpdate(
         { _id: id },
+        updateData,
         { ...req.body },
         { new: true } // This option ensures that the updated document is returned
       );
@@ -150,5 +208,7 @@ module.exports = {
     deleteClient,
     updateClient,
     updateclientPassword,
-    getClientByEmail
+    getClientByEmail,
+    getClientByUserId,
+    updateClientByUserId
 }

@@ -38,7 +38,7 @@ router.post("/forgotpassword", async (req, res) => {
     // console.log(req.body);
 
   const verificationLink = `This Link Valid For 2 MINUTES ${url}/${user._id}/${result.token}`
-  //console.log(verificationLink);
+  console.log(verificationLink);
   // HTML content for the email body
   const htmlPage = `
   <!doctype html>
