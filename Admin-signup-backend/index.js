@@ -55,7 +55,7 @@ const emailsync = require("../../AdminBackend/Admin-signup-backend/middleware/em
 app.use("/", emailsync);
 
 app.use("/uploads", express.static("middleware/uploads"));
-app.use("/settingsuploads", express.static("middleware/settingsuploads"));
+// app.use("/settingsuploads", express.static("middleware/settingsuploads")); 
 
 
 // firmsettinga

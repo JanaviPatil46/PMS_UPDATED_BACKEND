@@ -2,7 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, 'settingsuploads');
+const uploadDir = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -18,8 +18,8 @@ const storage = multer.diskStorage({
     }
 });
 
-const settingsupload = multer({ storage: storage });
+const uploadimg = multer({ storage: storage });
 
 // module.exports = upload;  // Make sure upload is exported
 
-module.exports = { settingsupload };
+module.exports = { uploadimg };

@@ -80,7 +80,8 @@ const express = require("express");
 const router = express.Router();
 
 const { upload } = require("../middleware/uploadfile");
-const{settingsupload}=require("../middleware/accountSettingsUploadfiles");
+const{uploadimg}=require("../middleware/clientuploadfile");
+
 const { createAdmin, getAdmins, getAdmin,getAdminByUserid, deleteAdmin, updateAdmin, updatePassword, getAdminByEmail } = require("../controller/adminSignupController");
 // const { createAccount, getAccount, getAccounts, updateAccount, deleteAccount, getAccountsList, getAccountsListById, getAccountListByUserId } = require("../Controller/accountDetailsController");
 const { createTeamMember, getTeamMembers, getTeamMember, deleteTeamMember, updateTeamMember, getTeamMemberList, updateTeamMemberPassword } = require("../Controller/teamMemberController");
@@ -134,9 +135,10 @@ router.get("/clientsignup/:id", getClient);
 router.get("/client/:userid" , getClientByUserId);
 router.post("/clientsignup", createClient);
 router.delete("/clientsignup/:id", deleteClient);
-router.patch("/clientsignup/:id",  updateClient);
+router.patch("/clientsignup/:id",uploadimg.single("ProfilePicture"),  updateClient);
 
-router.patch("/client/:userid",upload.single("ProfilePicture"),  updateClientByUserId);
+
+router.patch("/client/:userid",  updateClientByUserId);
 
 router.get("/clientsignup/clientbyemail/:email", getClientByEmail);
 router.patch("/clientsignup/updateclientPassword", updateclientPassword);

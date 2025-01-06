@@ -54,7 +54,10 @@ const clientSchema = new mongoose.Schema({
   userid:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  }
+  },
+  profilePicture: {
+    type: String, 
+    },
 });
 
 // Hash the password before saving
