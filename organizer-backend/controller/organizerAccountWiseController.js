@@ -368,64 +368,55 @@ const getOrganizerByAccountId = async (req, res) => {
   }
 };
 
-//update a new OrganizerTemplate
-// const updateOrganizerAccountWise = async (req, res) => {
-//   const { id } = req.params;
 
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "Invalid TaskTemplate ID" });
-//   }
-
-//   try {
-//     const updatedOrganizerAccountWise = await OrganizerAccountWise.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
-
-//     if (!updatedOrganizerAccountWise) {
-//       return res.status(404).json({ error: "No such OrganizerAccountWise" });
-//     }
-
-//     res.status(200).json({ message: "Organizer AccountWise Updated successfully", updatedOrganizerAccountWise });
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// };
-
-const updateOrganizerAccountWise = async (req, res) => {
-  const { id } = req.params;
+const updateOrganizerAccountWiseStatus = async (req, res) => {
+  const { id, issubmited } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Invalid OrganizerAccountWise ID" });
   }
 
   try {
-    const { sections, issubmited } = req.body;
+    // Ensure `issubmited` is properly handled and included in the update
+    const updatedData = {
+      ...req.body,
+      issubmited: issubmited === "true", // Assuming `issubmited` is passed as a string ("true"/"false")
+    };
 
-    console.log("Received Sections:", sections);
+    const updatedOrganizerAccountWise = await OrganizerAccountWise.findOneAndUpdate(
+      { _id: id },
+      updatedData,
+      { new: true }
+    );
 
-    const updates = sections.map(section => ({
-      updateOne: {
-        filter: { _id: id, "sections.id": section.id },
-        update: { 
-          $set: {
-            "sections.$.issubmited": section.issubmited
-          }
-        }
-      }
-    }));
-
-    const bulkWriteResult = await OrganizerAccountWise.bulkWrite(updates);
-
-    if (!bulkWriteResult.matchedCount) {
-      return res.status(404).json({ error: "No matching OrganizerAccountWise found" });
+    if (!updatedOrganizerAccountWise) {
+      return res.status(404).json({ error: "No such OrganizerAccountWise" });
     }
 
-    console.log("Bulk Write Result:", bulkWriteResult);
-    res.status(200).json({
-      message: "Organizer AccountWise Updated successfully",
-      bulkWriteResult,
-    });
+    res.status(200).json({ message: "Organizer AccountWise updated successfully", updatedOrganizerAccountWise });
   } catch (error) {
-    console.error("Error updating organizer:", error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+
+const updateOrganizerAccountWise = async (req, res) => {
+  const { id} = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid TaskTemplate ID" });
+  }
+
+  try {
+    const updatedOrganizerAccountWise = await OrganizerAccountWise.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+
+    if (!updatedOrganizerAccountWise) {
+      return res.status(404).json({ error: "No such OrganizerAccountWise" });
+    }
+
+    res.status(200).json({ message: "Organizer AccountWise Updated successfully", updatedOrganizerAccountWise });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -441,5 +432,6 @@ module.exports = {
   deleteOrganizerAccountWise,
   getOrganizerByAccountId,
   updateOrganizerAccountWise,
+  updateOrganizerAccountWiseStatus
 
 };

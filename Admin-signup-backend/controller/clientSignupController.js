@@ -91,7 +91,7 @@ const createClient = async (req, res) => {
     }
 
     const client = await Client.create({
-      firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword, userid, profilePicture,getClientByUserId });
+      firstName, middleName, lastName, accountName, phoneNumber, email, password, cpassword, userid, profilePicture, });
    
     res.status(200).json({ message: "Client created successfully", client });
   } catch (error) {
