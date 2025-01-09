@@ -30,6 +30,53 @@ const getOrganizerAccountWise = async (req, res) => {
   }
 };
 
+// //Get a single ActiveorganizerAccountWise
+// const getActiveOrganizerAccountWise = async (req, res) => {
+//   try {
+//     const { id, isactive } = req.params;
+
+//     // Validate `isactive` parameter
+//     if (typeof isactive === 'true') {
+//       return res.status(400).json({ message: "`isactive` parameter is required" });
+//     }
+
+//     // Fetch the organizer account-wise data based on `id` and `isactive`
+//     const organizerAccountWise = await OrganizerAccountWise.findOne({ 
+//       id: _id, 
+//       isActive: isactive 
+//     });
+
+//     if (!organizerAccountWise) {
+//       return res.status(404).json({ message: "Organizer AccountWise not found" });
+//     }
+
+//     res.status(200).json({ 
+//       message: "Organizer AccountWise retrieved successfully", 
+//       organizerAccountWise 
+//     });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+//active OrganizerAccountWises
+const getActiveOrganizerAccountWises = async (req, res) => {
+  try {
+    const { isactive, accountid } = req.params;
+
+    // Use the params in the query to filter the results
+    const organizerAccountWise = await OrganizerAccountWise.find({ active: isactive, accountid: accountid });
+
+    res.status(200).json({
+      message: "OrganizerAccountWise Template retrieved successfully",
+      organizerAccountWise,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
 //POST a new OrganizerAccountWise
 
 
@@ -369,6 +416,10 @@ const getOrganizerByAccountId = async (req, res) => {
 };
 
 
+
+
+
+
 const updateOrganizerAccountWiseStatus = async (req, res) => {
   const { id, issubmited } = req.params;
 
@@ -432,6 +483,6 @@ module.exports = {
   deleteOrganizerAccountWise,
   getOrganizerByAccountId,
   updateOrganizerAccountWise,
-  updateOrganizerAccountWiseStatus
-
+  updateOrganizerAccountWiseStatus,
+  getActiveOrganizerAccountWises
 };
